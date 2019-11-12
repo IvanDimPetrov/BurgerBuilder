@@ -23,7 +23,19 @@ const modal = (props) => {
 
 
 const comparisonFn = function(prevProps, nextProps) {
-    return prevProps.show === nextProps.show;
+
+    if (prevProps.show !== nextProps.show) {
+        return false;
+    }
+
+    if (nextProps.children === prevProps.children) {
+        return true;
+    }
+    else if (nextProps.children !== prevProps.children) {
+        return false;
+    }
+
+    return true;
 };
 
 export default React.memo(modal, comparisonFn);
