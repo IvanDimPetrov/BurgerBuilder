@@ -81,30 +81,17 @@ class BurgerBuilder extends React.Component {
     }
 
     purchaseContinueHandler = () => {
+        const queryParams = [];
 
-        this.setState( {loading: true} );
-    
-        const dataToSend = {
-            price: this.state.totalPrice,
-            ingredient: this.state.ingredients,
-            customer: {
-                name: 'Ivan Petrov'
-            },
-            deliveryMethod: 'fastest'
+        for (let key in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(key) + '=' + encodeURI(this.state.ingredients[key]))
         }
+        queryParams.push('totalprice=' + this.state.totalPrice);
 
-        axiosOrders.post('orders.json', dataToSend)
-                    .then((response) => {
-                        if (response) {
-                            this.setState(INITIAL_STATE);
-                        }
-                        else {
-                            this.setState({loading: false, purchaseMode: false})
-                        }
-                        
-                    })
-                    .catch((err) => {
-                    });
+        this.props.history.push({
+            pathname: "/checkout",
+            search: queryParams.join('&')
+        });
     };
 
     componentDidMount() {
@@ -118,7 +105,6 @@ class BurgerBuilder extends React.Component {
     };
 
     render() {
-
         if (this.state) {
 
             const  disabledInfo = {};
@@ -133,9 +119,9 @@ class BurgerBuilder extends React.Component {
                                     });
 
             let modalChildren = <OrderSummary ingredients={ this.state.ingredients }
-                                            price={ this.state.totalPrice }
-                                            purchaseCancel={ this.purcheseCancelHandler }
-                                            purchaseContinue={ this.purchaseContinueHandler }/>;
+                                                price={ this.state.totalPrice }
+                                                purchaseCancel={ this.purcheseCancelHandler }
+                                                purchaseContinue={ this.purchaseContinueHandler }/>;
 
             if (this.state.loading === true) {
                 modalChildren = <Spinner/>
@@ -146,7 +132,7 @@ class BurgerBuilder extends React.Component {
                 <Aux>
 
                     <Modal show={ this.state.purchaseMode }
-                        modalClosed={ this.purcheseCancelHandler }>
+                           modalClosed={ this.purcheseCancelHandler }>
 
                         { modalChildren }
                             
@@ -155,11 +141,11 @@ class BurgerBuilder extends React.Component {
                     <Burger ingredients={this.state.ingredients}></Burger>
 
                     <BuildControls price={ this.state.totalPrice }
-                                                                disabledInfo={ disabledInfo }
-                                                                purchase={ this.purchaseHandler }
-                                                                orderDisabled={ this.state.purchesable }
-                                                                ingredientAdded={ this.addIngredientHandler }
-                                                                ingredientRemove={ this.removeIngredient }/>
+                                    disabledInfo={ disabledInfo }
+                                    purchase={ this.purchaseHandler }
+                                    orderDisabled={ this.state.purchesable }
+                                    ingredientAdded={ this.addIngredientHandler }
+                                    ingredientRemove={ this.removeIngredient }/>
 
                 </Aux>
             )

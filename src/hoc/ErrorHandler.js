@@ -4,7 +4,7 @@ import Aux from './Auxiliary.js';
 
 const ErrorHandler = (WrappedComponent, axios) => {
     return function ErrorHandlerComponent (props) {
-
+        
         const [show, setShow] = useState(false);
 
         let responceInteceptors = axios.interceptors.response.use(response => {
